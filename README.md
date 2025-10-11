@@ -5,10 +5,10 @@
 ### [사용자 등록](https://github.com/OUS-KR/ISFJ.KR/issues/new?template=01-user-register-by-issue.yml)
 
 - `ISFJ.KR/u/{사용자 아이디}` 주소 기반의 사용자 등록
-  - 사용자 예제: [ISFJ.KR/u/isfj](https://isfj.kr/u/isfj)
+  - 사용자 예제: [ISFJ.KR/u/isfj](https://isfj.kr/u/isfj), [ISFJ.KR/u/tests/](https://isfj.kr/u/tests)
   - [사용자 등록 예제](https://github.com/OUS-KR/ISFJ.KR/issues/2 )
 - `ISFJ.KR/@{사용자 아이디}` 형태의 짧은 주소 지원
-  - 사용자 예제: [ISFJ.KR/@isfj](https://isfj.kr/@isfj)
+  - 사용자 예제: [ISFJ.KR/@isfj](https://isfj.kr/@isfj), [ISFJ.KR/@tests](https://isfj.kr/@tests)
 - 부적절한 아이디 (욕설, 관리자 등)는 제한되어 등록 시 삭제
 
 ### [사용자 단축주소 생성](https://github.com/OUS-KR/ISFJ.KR/issues/new?template=02-user-short-url-register-by-issue.yml)
