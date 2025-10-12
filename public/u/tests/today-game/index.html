@@ -156,99 +156,67 @@
 
     // --- Game Implementations for ISFJ ---
 
-    // Game 0: Spot the Difference
-    function setupSpotTheDifferenceGame() {
-        document.getElementById('gameTitle').innerText = "오늘의 게임: 틀린 그림 찾기";
+    // Game 0: Rule Following Quiz
+    function setupRuleFollowingQuiz() {
+        document.getElementById('gameTitle').innerText = "오늘의 게임: 규칙 준수 퀴즈";
         const gameArea = document.getElementById('gameArea');
+        const scenarios = [
+            { q: "새로운 업무 지침이 내려왔습니다. 당신의 반응은?", a: ["지침을 꼼꼼히 읽고 그대로 따른다.", "지침의 비효율적인 부분을 찾아 개선을 제안한다.", "기존 방식대로 업무를 처리한다."], correct: 0 },
+            { q: "공공장소에서 누군가 규칙을 어기는 것을 보았습니다. 당신의 반응은?", a: ["조용히 지켜본다.", "직접 가서 규칙을 알려준다.", "관리자에게 알린다."], correct: 2 },
+            { q: "팀 프로젝트에서 정해진 절차를 따라야 합니다. 당신의 생각은?", a: ["절차를 따르는 것이 효율적이다.", "때로는 절차를 무시하고 창의적으로 해야 한다.", "절차보다는 결과가 중요하다."], correct: 0 }
+        ];
+        const scenario = scenarios[Math.floor(currentRandFn() * scenarios.length)];
+        currentCorrectAnswer = scenario.correct;
         gameArea.innerHTML = `
-            <div class="game-display question">두 이미지에서 다른 점을 찾아 클릭하세요.</div>
-            <div style="display:flex; gap: 10px; position: relative;">
-                <img src="https://via.placeholder.com/200x200/eee/000?text=Image+1" alt="Image 1">
-                <img src="https://via.placeholder.com/200x200/eee/000?text=Image+2" alt="Image 2">
-                <div style="position: absolute; top: 50px; left: 260px; width: 20px; height: 20px; cursor:pointer;" onclick="showFeedback(true)"></div>
+            <div class="game-display question">${scenario.q}</div>
+            <div class="choices">
+                ${scenario.a.map((choice, index) => `<button class="choice-btn" data-index="${index}">${choice}</button>`).join('')}
             </div>
         `;
         document.getElementById('game-input-area').innerHTML = '';
         gameInProgress = true;
     }
 
-    // Game 1: Memory Card Flip
-    function setupMemoryCardGame() {
-        document.getElementById('gameTitle').innerText = "오늘의 게임: 기억력 카드 뒤집기";
+    // Game 1: Everyday Consideration Quiz
+    function setupEverydayConsiderationQuiz() {
+        document.getElementById('gameTitle').innerText = "오늘의 게임: 일상 속 배려 퀴즈";
         const gameArea = document.getElementById('gameArea');
-        const emojis = ["💖", "👍", "😊", "🎉", "🌟", "🎁"];
-        let cards = [...emojis, ...emojis].sort(() => currentRandFn() - 0.5);
-        let flippedCards = [];
-        let matchedPairs = 0;
-
-        gameArea.innerHTML = `<div class="memory-grid"></div>`;
-        const grid = gameArea.querySelector('.memory-grid');
-        cards.forEach(emoji => {
-            const card = document.createElement('div');
-            card.classList.add('memory-card');
-            card.dataset.emoji = emoji;
-            card.addEventListener('click', () => {
-                if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
-                    card.classList.add('flipped');
-                    card.innerText = card.dataset.emoji;
-                    flippedCards.push(card);
-
-                    if (flippedCards.length === 2) {
-                        if (flippedCards[0].dataset.emoji === flippedCards[1].dataset.emoji) {
-                            flippedCards[0].classList.add('matched');
-                            flippedCards[1].classList.add('matched');
-                            flippedCards = [];
-                            matchedPairs++;
-                            if (matchedPairs === emojis.length) {
-                                showFeedback(true, "완벽해요! 모든 짝을 맞추셨네요.");
-                            }
-                        } else {
-                            setTimeout(() => {
-                                flippedCards[0].classList.remove('flipped');
-                                flippedCards[1].classList.remove('flipped');
-                                flippedCards[0].innerText = '';
-                                flippedCards[1].innerText = '';
-                                flippedCards = [];
-                            }, 1000);
-                        }
-                    }
-                }
-            });
-            grid.appendChild(card);
-        });
+        const scenarios = [
+            { q: "친구가 감기에 걸려 힘들어합니다. 어떻게 하시겠습니까?", a: ["따뜻한 죽을 끓여 가져다준다.", "병원에 가보라고 조언한다.", "푹 쉬라고 메시지를 보낸다."], correct: 0 },
+            { q: "이웃집에 갓난아기가 있습니다. 당신의 행동은?", a: ["밤늦게 소음이 나지 않도록 조심한다.", "아기에게 필요한 물품을 선물한다.", "가끔 아기를 돌봐준다."], correct: 0 },
+            { q: "모임에서 한 친구가 소외감을 느끼는 것 같습니다. 어떻게 하시겠습니까?", a: ["그 친구에게 말을 걸어 대화에 참여시킨다.", "다른 친구들에게 그 친구를 챙기라고 한다.", "상황이 자연스럽게 해결되도록 기다린다."], correct: 0 }
+        ];
+        const scenario = scenarios[Math.floor(currentRandFn() * scenarios.length)];
+        currentCorrectAnswer = scenario.correct;
+        gameArea.innerHTML = `
+            <div class="game-display question">${scenario.q}</div>
+            <div class="choices">
+                ${scenario.a.map((choice, index) => `<button class="choice-btn" data-index="${index}">${choice}</button>`).join('')}
+            </div>
+        `;
         document.getElementById('game-input-area').innerHTML = '';
         gameInProgress = true;
     }
 
-    // Game 2: Tidying Challenge
-    function setupTidyingChallengeGame() {
-        document.getElementById('gameTitle').innerText = "오늘의 게임: 정리 정돈 챌린지";
+    // Game 2: Relationship Maintenance Quiz
+    function setupRelationshipMaintenanceQuiz() {
+        document.getElementById('gameTitle').innerText = "오늘의 게임: 관계 유지 퀴즈";
         const gameArea = document.getElementById('gameArea');
-        const items = ["책", "옷", "컵", "신발"];
-        const correctOrder = ["옷", "신발", "책", "컵"]; // Example correct order
-        currentCorrectAnswer = correctOrder.join(',');
-        let userOrder = [];
-
+        const scenarios = [
+            { q: "오랜만에 만난 친구가 힘든 이야기를 털어놓습니다. 당신의 반응은?", a: ["친구의 이야기를 끝까지 경청하고 공감한다.", "즉시 해결책을 제시하며 조언한다.", "다른 친구들에게 이 사실을 알리고 함께 걱정한다."], correct: 0 },
+            { q: "친구가 중요한 시험을 앞두고 있습니다. 어떻게 응원하시겠습니까?", a: ["따뜻한 응원 메시지와 함께 작은 선물을 보낸다.", "시험 잘 보라고 격려한다.", "시험 끝나고 맛있는 거 사주겠다고 한다."], correct: 0 },
+            { q: "가족 중 한 명이 힘든 시기를 겪고 있습니다. 어떻게 도움을 줄까요?", a: ["곁에서 묵묵히 지지하며 필요한 것을 챙겨준다.", "힘내라고 말하며 긍정적인 생각을 하라고 한다.", "문제를 해결하기 위해 적극적으로 나선다."], correct: 0 }
+        ];
+        const scenario = scenarios[Math.floor(currentRandFn() * scenarios.length)];
+        currentCorrectAnswer = scenario.correct;
         gameArea.innerHTML = `
-            <div class="game-display question">다음 물건들을 올바른 순서대로 정리해 보세요.</div>
-            <div class="choices" id="item-choices">
-                ${items.sort(() => currentRandFn() - 0.5).map(item => `<button class="choice-btn">${item}</button>`).join('')}
+            <div class="game-display question">${scenario.q}</div>
+            <div class="choices">
+                ${scenario.a.map((choice, index) => `<button class="choice-btn" data-index="${index}">${choice}</button>`).join('')}
             </div>
-            <div class="game-display" style="margin-top:1em; border-top: 1px solid #ccc; padding-top: 1em;">정리 순서: <span id="user-order"></span></div>
         `;
         document.getElementById('game-input-area').innerHTML = '';
         gameInProgress = true;
-
-        document.querySelectorAll('#item-choices .choice-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                userOrder.push(btn.innerText);
-                document.getElementById('user-order').innerText = userOrder.join(' -> ');
-                btn.disabled = true;
-                if (userOrder.length === items.length) {
-                    showFeedback(userOrder.join(',') === currentCorrectAnswer);
-                }
-            });
-        });
     }
 
     // Game 3: Schedule Planning Quiz
@@ -269,9 +237,9 @@
 
     // --- Game Dispatcher and Common Logic ---
     const gameTypes = [
-        setupSpotTheDifferenceGame,
-        setupMemoryCardGame,
-        setupTidyingChallengeGame,
+        setupRuleFollowingQuiz,
+        setupEverydayConsiderationQuiz,
+        setupRelationshipMaintenanceQuiz,
         setupScheduleQuizGame
     ];
 
@@ -321,12 +289,10 @@
         document.getElementById('feedbackMessage').innerText = '';
         document.getElementById('feedbackMessage').className = "feedback-message";
         
-        const currentGameFn = gameTypes[gameTypeIndex];
-        if (currentGameFn !== setupMemoryCardGame && currentGameFn !== setupTidyingChallengeGame && currentGameFn !== setupSpotTheDifferenceGame) {
-             document.querySelectorAll('.choice-btn').forEach(btn => {
-                btn.addEventListener('click', handleChoiceClick);
-            });
-        }
+        // Add event listeners after creating the elements
+        document.querySelectorAll('.choice-btn').forEach(btn => {
+            btn.addEventListener('click', handleChoiceClick);
+        });
     }
 
     window.onload = function() {
