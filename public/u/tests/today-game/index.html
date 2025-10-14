@@ -4,25 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>오늘의 게임 - ISFJ</title>
-    <link rel="stylesheet" href="/u/tests/assets/css/main.css?20251011000000">
+    <link rel="stylesheet" href="/u/tests/assets/css/main.css?20251014190000">
     <style>
         .game-card-content {
             text-align: center;
+            padding: 20px;
+            background: linear-gradient(145deg, var(--background-color-light), var(--background-color));
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
         }
         .game-area {
             margin-top: 1.5em;
-            min-height: 150px;
+            min-height: 200px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .game-display {
-            margin-bottom: 1em;
+            justify-content: flex-start;
+            align-items: flex-start;
+            text-align: left;
+            padding: 1.5em;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background-color: var(--background-color-light);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            line-height: 1.8;
             color: var(--text-color);
         }
-        .game-display.question {
-            font-size: 1.2em;
+        .game-area p {
+            margin-bottom: 0.8em;
+            line-height: 1.6;
+        }
+        #gameStats {
+            background-color: var(--secondary-color);
+            color: var(--text-color-inverted);
+            padding: 1em 1.5em;
+            border-radius: 10px;
+            margin-bottom: 1.5em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            text-align: left;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        #gameStats p {
+            margin: 0.3em 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #gameStats p b {
+            font-size: 1.1em;
+            color: var(--accent-color);
+        }
+        #gameStats span {
             font-weight: bold;
         }
         .choices {
@@ -30,53 +63,47 @@
             flex-direction: column;
             gap: 0.8em;
             width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
+            max-width: 450px;
+            margin: 1.5em auto 0 auto;
         }
         .choice-btn {
-            padding: 0.8em 1em;
-            font-size: 1em;
+            padding: 1em 1.2em;
+            font-size: 1.05em;
             background-color: var(--primary-color);
             color: var(--text-color-inverted);
-            border: 1px solid var(--primary-color-dark);
-            border-radius: 4px;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
             width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: left;
         }
         .choice-btn:hover {
             background-color: var(--primary-color-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
         }
-        .memory-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-        .memory-card {
-            width: 60px;
-            height: 60px;
-            background-color: var(--primary-color-light);
-            border: 2px solid var(--primary-color-dark);
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2em;
-        }
-        .memory-card.flipped, .memory-card.matched {
-            background-color: var(--accent-color);
+        .choice-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .feedback-message {
-            margin-top: 1em;
-            font-size: 1.2em;
+            margin-top: 1.5em;
+            font-size: 1.3em;
             font-weight: bold;
+            padding: 0.8em;
+            border-radius: 8px;
+            background-color: var(--background-color-light);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .feedback-message.correct {
             color: var(--success-color);
+            border: 1px solid var(--success-color);
         }
         .feedback-message.incorrect {
             color: var(--error-color);
+            border: 1px solid var(--error-color);
         }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4262871645049971" crossorigin="anonymous"></script>
@@ -107,6 +134,7 @@
         </div>
         
         <div class="card info-card game-card-content">
+            <div id="gameStats"></div>
             <div id="game-info">
                 <div id="gameTitle" class="card-title"></div>
                 <p id="gameDescription">게임을 불러오는 중...</p>
@@ -114,9 +142,11 @@
             <div id="gameArea" class="game-area">
                 <!-- Game content will be loaded here by JavaScript -->
             </div>
-            <div id="game-input-area">
-                <!-- Game input will be loaded here by JavaScript -->
+            <div id="gameChoices" class="choices">
+                <!-- Game choices will be loaded here by JavaScript -->
             </div>
+            <button id="nextDayBtn" class="choice-btn" style="margin-top: 20px;">다음날로 넘어가기 (오늘 5회 중 <span id="manualDayCounter">0</span>회)</button>
+            <button id="resetGameBtn" class="choice-btn" style="margin-top: 10px; background-color: var(--error-color); padding: 0.6em 1em; font-size: 0.9em; width: auto; align-self: center;">게임 초기화</button>
             <p id="feedbackMessage" class="feedback-message"></p>
         </div>
         
@@ -132,177 +162,8 @@
         </div>
     </div>
 
-    <script src="/u/tests/assets/js/main.js?20251011000000" defer></script>
-    <script src="/u/tests/assets/js/dynamic-menu.js" defer></script>
-    <script>
-    function getDailySeed() {
-        const today = new Date();
-        return today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-    }
-
-    function mulberry32(seed) {
-        return function() {
-            seed |= 0;
-            seed = seed + 0x6D2B79F5 | 0;
-            let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-            t = t + Math.imul(t ^ t >>> 7, 61 | t) | 0;
-            return ((t ^ t >>> 14) >>> 0) / 4294967296;
-        }
-    }
-
-    let currentCorrectAnswer = null;
-    let currentRandFn = null;
-    let gameInProgress = false;
-
-    // --- Game Implementations for ISFJ ---
-
-    // Game 0: Rule Following Quiz
-    function setupRuleFollowingQuiz() {
-        document.getElementById('gameTitle').innerText = "오늘의 게임: 규칙 준수 퀴즈";
-        const gameArea = document.getElementById('gameArea');
-        const scenarios = [
-            { q: "새로운 업무 지침이 내려왔습니다. 당신의 반응은?", a: ["지침을 꼼꼼히 읽고 그대로 따른다.", "지침의 비효율적인 부분을 찾아 개선을 제안한다.", "기존 방식대로 업무를 처리한다."], correct: 0 },
-            { q: "공공장소에서 누군가 규칙을 어기는 것을 보았습니다. 당신의 반응은?", a: ["조용히 지켜본다.", "직접 가서 규칙을 알려준다.", "관리자에게 알린다."], correct: 2 },
-            { q: "팀 프로젝트에서 정해진 절차를 따라야 합니다. 당신의 생각은?", a: ["절차를 따르는 것이 효율적이다.", "때로는 절차를 무시하고 창의적으로 해야 한다.", "절차보다는 결과가 중요하다."], correct: 0 }
-        ];
-        const scenario = scenarios[Math.floor(currentRandFn() * scenarios.length)];
-        currentCorrectAnswer = scenario.correct;
-        gameArea.innerHTML = `
-            <div class="game-display question">${scenario.q}</div>
-            <div class="choices">
-                ${scenario.a.map((choice, index) => `<button class="choice-btn" data-index="${index}">${choice}</button>`).join('')}
-            </div>
-        `;
-        document.getElementById('game-input-area').innerHTML = '';
-        gameInProgress = true;
-    }
-
-    // Game 1: Everyday Consideration Quiz
-    function setupEverydayConsiderationQuiz() {
-        document.getElementById('gameTitle').innerText = "오늘의 게임: 일상 속 배려 퀴즈";
-        const gameArea = document.getElementById('gameArea');
-        const scenarios = [
-            { q: "친구가 감기에 걸려 힘들어합니다. 어떻게 하시겠습니까?", a: ["따뜻한 죽을 끓여 가져다준다.", "병원에 가보라고 조언한다.", "푹 쉬라고 메시지를 보낸다."], correct: 0 },
-            { q: "이웃집에 갓난아기가 있습니다. 당신의 행동은?", a: ["밤늦게 소음이 나지 않도록 조심한다.", "아기에게 필요한 물품을 선물한다.", "가끔 아기를 돌봐준다."], correct: 0 },
-            { q: "모임에서 한 친구가 소외감을 느끼는 것 같습니다. 어떻게 하시겠습니까?", a: ["그 친구에게 말을 걸어 대화에 참여시킨다.", "다른 친구들에게 그 친구를 챙기라고 한다.", "상황이 자연스럽게 해결되도록 기다린다."], correct: 0 }
-        ];
-        const scenario = scenarios[Math.floor(currentRandFn() * scenarios.length)];
-        currentCorrectAnswer = scenario.correct;
-        gameArea.innerHTML = `
-            <div class="game-display question">${scenario.q}</div>
-            <div class="choices">
-                ${scenario.a.map((choice, index) => `<button class="choice-btn" data-index="${index}">${choice}</button>`).join('')}
-            </div>
-        `;
-        document.getElementById('game-input-area').innerHTML = '';
-        gameInProgress = true;
-    }
-
-    // Game 2: Relationship Maintenance Quiz
-    function setupRelationshipMaintenanceQuiz() {
-        document.getElementById('gameTitle').innerText = "오늘의 게임: 관계 유지 퀴즈";
-        const gameArea = document.getElementById('gameArea');
-        const scenarios = [
-            { q: "오랜만에 만난 친구가 힘든 이야기를 털어놓습니다. 당신의 반응은?", a: ["친구의 이야기를 끝까지 경청하고 공감한다.", "즉시 해결책을 제시하며 조언한다.", "다른 친구들에게 이 사실을 알리고 함께 걱정한다."], correct: 0 },
-            { q: "친구가 중요한 시험을 앞두고 있습니다. 어떻게 응원하시겠습니까?", a: ["따뜻한 응원 메시지와 함께 작은 선물을 보낸다.", "시험 잘 보라고 격려한다.", "시험 끝나고 맛있는 거 사주겠다고 한다."], correct: 0 },
-            { q: "가족 중 한 명이 힘든 시기를 겪고 있습니다. 어떻게 도움을 줄까요?", a: ["곁에서 묵묵히 지지하며 필요한 것을 챙겨준다.", "힘내라고 말하며 긍정적인 생각을 하라고 한다.", "문제를 해결하기 위해 적극적으로 나선다."], correct: 0 }
-        ];
-        const scenario = scenarios[Math.floor(currentRandFn() * scenarios.length)];
-        currentCorrectAnswer = scenario.correct;
-        gameArea.innerHTML = `
-            <div class="game-display question">${scenario.q}</div>
-            <div class="choices">
-                ${scenario.a.map((choice, index) => `<button class="choice-btn" data-index="${index}">${choice}</button>`).join('')}
-            </div>
-        `;
-        document.getElementById('game-input-area').innerHTML = '';
-        gameInProgress = true;
-    }
-
-    // Game 3: Schedule Planning Quiz
-    function setupScheduleQuizGame() {
-        document.getElementById('gameTitle').innerText = "오늘의 게임: 일정 계획 퀴즈";
-        const gameArea = document.getElementById('gameArea');
-        const scenario = { q: "친구 약속, 프로젝트 마감, 병원 예약이 있습니다. 가장 효율적인 하루 동선은?", a: ["병원->친구->프로젝트", "친구->병원->프로젝트", "프로젝트->병원->친구"], correct: 0 };
-        currentCorrectAnswer = scenario.correct;
-        gameArea.innerHTML = `
-            <div class="game-display question">${scenario.q}</div>
-            <div class="choices">
-                ${scenario.a.map((choice, index) => `<button class="choice-btn" data-index="${index}">${choice}</button>`).join('')}
-            </div>
-        `;
-        document.getElementById('game-input-area').innerHTML = '';
-        gameInProgress = true;
-    }
-
-    // --- Game Dispatcher and Common Logic ---
-    const gameTypes = [
-        setupRuleFollowingQuiz,
-        setupEverydayConsiderationQuiz,
-        setupRelationshipMaintenanceQuiz,
-        setupScheduleQuizGame
-    ];
-
-    function getDayOfWeekText(day) {
-        const messages = [
-            "일요일의 마무리, 다음 한 주를 계획해 보세요.", // Sunday
-            "새로운 한 주, 차분하고 성실하게 시작해 보세요!", // Monday
-            "오늘은 당신의 꼼꼼함이 필요한 날입니다.", // Tuesday
-            "주 중반, 주변을 정리하며 마음의 안정을 찾아보세요.", // Wednesday
-            "당신의 헌신이 주변을 따뜻하게 만듭니다.", // Thursday
-            "주말을 앞둔 금요일, 편안한 휴식을 계획해 보세요.", // Friday
-            "여유로운 토요일, 소중한 기억들을 떠올려보는 건 어떠신가요?", // Saturday
-        ];
-        return messages[day];
-    }
-
-    function showFeedback(isCorrect, message) {
-        const feedbackMessage = document.getElementById('feedbackMessage');
-        if (isCorrect) {
-            feedbackMessage.innerText = message || "정답입니다! 역시 ISFJ, 꼼꼼하고 세심하시군요.";
-            feedbackMessage.className = "feedback-message correct";
-        } else {
-            feedbackMessage.innerText = message || "아쉽네요. 다시 한번 차분하게 생각해 보세요.";
-            feedbackMessage.className = "feedback-message incorrect";
-        }
-        gameInProgress = false;
-    }
-
-    function handleChoiceClick(event) {
-        if (!gameInProgress) return;
-        const selectedIndex = parseInt(event.target.getAttribute('data-index'));
-        showFeedback(selectedIndex === currentCorrectAnswer);
-        document.querySelectorAll('.choice-btn').forEach(btn => btn.disabled = true);
-    }
-
-    function initDailyGame() {
-        const today = new Date();
-        const seed = getDailySeed();
-        currentRandFn = mulberry32(seed);
-        
-        const dayOfWeek = today.getDay();
-        document.getElementById('gameDescription').innerText = getDayOfWeekText(dayOfWeek);
-
-        const gameTypeIndex = Math.floor(currentRandFn() * gameTypes.length + dayOfWeek) % gameTypes.length;
-        gameTypes[gameTypeIndex]();
-
-        document.getElementById('feedbackMessage').innerText = '';
-        document.getElementById('feedbackMessage').className = "feedback-message";
-        
-        // Add event listeners after creating the elements
-        document.querySelectorAll('.choice-btn').forEach(btn => {
-            btn.addEventListener('click', handleChoiceClick);
-        });
-    }
-
-    window.onload = function() {
-        try {
-            initDailyGame();
-        } catch (e) {
-            console.error("오늘의 게임 생성 중 오류 발생:", e);
-            document.getElementById('gameDescription').innerText = "콘텐츠를 불러오는 데 실패했습니다. 페이지를 새로고침해 주세요.";
-        }
-    };
-    </script>
+    <script src="/u/tests/assets/js/main.js?20251014190000" defer></script>
+    <script src="/u/tests/assets/js/dynamic-menu.js?20251014190000" defer></script>
+    <script src="/u/tests/assets/js/today-game.js?20251014190000" defer></script>
 </body>
 </html>
